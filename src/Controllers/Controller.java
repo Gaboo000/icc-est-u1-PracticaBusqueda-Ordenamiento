@@ -5,91 +5,104 @@ import Views.View;
 
 public class Controller {
     private View view;
+    private Person[] persons;
     private SortingMethods sortingMethods;
     private SearchingMethods searchMethods;
-
-    private Person[] person;
 
     public Controller(View view, SortingMethods sortingMethods, SearchingMethods searchMethods) {
         this.view = view;
         this.sortingMethods = sortingMethods;
         this.searchMethods = searchMethods;
-        System.out.println("Controller Created");
+        this.persons = new Person[0];
     }
 
-    public void start (){
-        int option = 0;
-        do{
+    public void start() {
+        int option;
+        do {
             option = view.showMenu();
             switch (option) {
                 case 1:
-                    inputPersonas();
-                    
+                    inputPersons();
                     break;
                 case 2:
-                    addPerson();
+                    view.displayPersons(persons);
                     break;
                 case 3:
                     sortPersons();
-                case 100:
-                    System.out.println("Adios");
-            
-                default:
-                    System.out.println("Opcion no valida");
                     break;
+                case 4:
+                    sortPersons();
+                    break;
+                case 5:
+                    searchPerson();
+                    break;
+                case 6:
+                    searchPerson();
+                    break;
+                case 7:
+                    System.out.println("Saliendo del programa.");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
             }
-
-        }while(option != 0){
-
-        }
-
+        } while (option != 7);
     }
 
-    
+    public void inputPersons() {
+        Person person = view.inputPerson();
+        addPersons(person);
+    }
+
+    public void addPersons(Person person) {
+        Person[] newPersons = new Person[persons.length + 1];
+        System.arraycopy(persons, 0, newPersons, 0, persons.length);
+        newPersons[persons.length] = person;
+        persons = newPersons;
+    }
+
     public void sortPersons() {
-        int sortingOption = view.selecSortingMethod();
-
-        if(sortingOption == 1){
-            sortingMethods.sortByNameBubble();
-
-        }else if (sortingOption ==2){
-            sortingMethods.sortByAgeWithSelection(person);
-
-        }else{
-            view.showMenu("Opcion invalida");
+        int method = view.selectSortingMethod();
+        switch (method) {
+            case 1:
+                sortingMethods.sortByNameWithBubble(persons);
+                break;
+            case 2:
+                sortingMethods.sortByNameWithSelectionDes(persons);
+                break;
+            case 3:
+                sortingMethods.sortByAgeWithInsertion(persons);
+                break;
+            case 4:
+                sortingMethods.sortByNameWithInsertion(persons);
+                break;
+            default:
+                System.out.println("Opción inválida. Intente de nuevo.");
         }
     }
 
-    public void inputPersonas() {
-        int numPersonas = view.inputInt("Ingrese el numero de Personas");
-        person = new Person [numPersonas];
-        
-        for(int i=0 ; i <numPersonas;i++){
-            person[i]= view.inputPerson();
+    public void searchPerson() {
+        int criterion = view.selectSearchCriterion();
+        switch (criterion) {
+            case 1:
+                if (searchMethods.isSortedByName(persons)) {
+                    String name = view.inputName();
+                    Person result = searchMethods.binarySearchByName(persons, name);
+                    view.displaySearchResult(result);
+                } else {
+                    System.out.println("La lista no está ordenada por nombre. No se puede realizar la búsqueda.");
+                }
+                break;
+            case 2:
+                if (searchMethods.isSortedByAge(persons)) {
+                    int age = view.inputAge();
+                    Person result = searchMethods.binarySearchByAge(persons, age);
+                    view.displaySearchResult(result);
+                } else {
+                    System.out.println("La lista no está ordenada por edad. No se puede realizar la búsqueda.");
+                }
+                break;
+            default:
+                System.out.println("Opción inválida. Intente de nuevo.");
         }
-        
     }
-    
-    private void addPerson() {
-        int numPersonas = view.inputInt("Ingrese el numero de Personas a agregar");
-
-        Person[] personasTotales = new Person[person.length + numPersonas];
-        for (int i = 0 ; i <person.length;i++){
-            personasTotales[i] = person[i];
-
-        }
-
-        for(int i = person.length; i< personasTotales.length;i++){
-            person[i] = view.inputPerson();
-        }
-
-        person = personasTotales;
-
-
-        
-        
-    }
-    
-    
 }
-        

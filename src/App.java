@@ -1,26 +1,12 @@
-
-import Controllers.Controller;
-import Controllers.SearchingMethods;
-import Controllers.SortingMethods;
+import Controllers.*;
 import Views.View;
-// 
 
 public class App {
-    public static void main(String[] args) throws Exception {
-        View vista = new View();
-
-        ///crear las clsaes con los metodos de ordenamiento y busqueda 
-
+    public static void main(String[] args) {
+        View view = new View();
         SortingMethods sortingMethods = new SortingMethods();
-        SearchingMethods searchingMethods = new SearchingMethods();
-
-
-        //crear el controlador 
-        Controller controller = new Controller(vista, sortingMethods, searchingMethods);
-
-
-        
-      
-
+        SearchingMethods searchMethods = new SearchingMethods();
+        Controller controller = new Controller(view, sortingMethods, searchMethods);
+        controller.start();
     }
 }
